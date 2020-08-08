@@ -8,7 +8,7 @@ class MeController extends Controller
 {
   public function __construct()
   {
-    $this->middleware(['auth:api', 'company']);
+    $this->middleware(['auth:api', 'site']);
   }
 
   /*
@@ -20,7 +20,7 @@ class MeController extends Controller
   {
     $user = $request->user();
     $user->roles = $user->roles;
-    $user->companies = $user->companies;
+    $user->sites = $user->sites;
 
     return response()->json([
       'data'    =>  $user->toArray(),

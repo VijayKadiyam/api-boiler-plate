@@ -62,6 +62,22 @@ return [
             'engine' => null,
         ],
 
+        'mysqltest' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => 'vesmostest',
+            'username' => 'root',
+            'password' => 'root',
+            'unix_socket' => '/Applications/MAMP/tmp/mysql/mysql.sock',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),

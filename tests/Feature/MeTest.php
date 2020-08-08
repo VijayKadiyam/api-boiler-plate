@@ -25,16 +25,20 @@ class MeTest extends TestCase
       ->assertJsonStructureExact([
           'data'  => [
             'id',
-            'name',
+            'first_name',
+            'middle_name',
+            'last_name',
+            'user_name',
+            'initials',
             'email',
-            'email_verified_at',
-            'active',
             'phone',
             'api_token',
+            'active',
+            'email_verified_at',
             'created_at',
             'updated_at',
             'roles',
-            'companies',
+            'sites',
           ],
           'success'
         ]);

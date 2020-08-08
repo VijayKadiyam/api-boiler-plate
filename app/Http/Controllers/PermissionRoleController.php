@@ -26,11 +26,10 @@ class PermissionRoleController extends Controller
     ]);
 
     $role =  Role::find($request->role_id);
-    $permission =  Permission::find($request->permission_id);
     if($request->op == 'assign')
-      $role->assignPermission($permission->id);
+      $role->assignPermission($request->permission_id);
     if($request->op == 'unassign')
-      $role->unassignPermission($permission->id);
+      $role->unassignPermission($request->permission_id);
     $permissionRole = Role::with('permissions')->find($request->role_id);
 
     return response()->json([

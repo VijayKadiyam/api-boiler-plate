@@ -10,7 +10,7 @@ class UsersController extends Controller
 {
   public function __construct()
   {
-    $this->middleware(['auth:api', 'company']);
+    $this->middleware(['auth:api', 'site']);
   }
 
   /*
@@ -23,18 +23,17 @@ class UsersController extends Controller
     $role = 3;
     $users = [];
     if($request->search == 'all')
-      $users = $request->company->users()->with('roles')
+      $users = $request->site->users()->with('roles')
         ->whereHas('roles',  function($q) {
           $q->where('name', '!=', 'Admin');
         })->latest()->get();
-    else 
-      if($request->role_id) {
-        $role = Role::find($request->role_id);
-        $users = $request->company->users()
-          ->whereHas('roles', function($q) use($role) { 
-            $q->where('name', '=', $role->name);
-          })->latest()->get();
-      }
+    else if($request->role_id) {
+      $role = Role::find($request->role_id);
+      $users = $request->site->users()
+        ->whereHas('roles', function($q) use($role) { 
+          $q->where('name', '=', $role->name);
+        })->latest()->get();
+    }
 
     return response()->json([
           'data'  =>  $users
@@ -42,16 +41,19 @@ class UsersController extends Controller
   }
 
   /*
-   * To store a new company user
+   * To store a new site user
    *
    *@
    */
   public function store(Request $request)
   {
     $request->validate([
-      'name'                    => ['required', 'string', 'max:255'],
-      'email'                   => ['required', 'string', 'email', 'max:255', 'unique:users'],
-      'phone'                   => ['required', 'unique:users']
+      'first_name'  =>  ['required', 'string', 'max:255'],
+      'last_name'   =>  ['required', 'string', 'max:255'],
+      'user_name'   =>  ['required'],
+      'initials'    =>  ['required'],
+      'email'       =>  ['required', 'string', 'email', 'max:255', 'unique:users'],
+      'active'      =>  ['required']
     ]);
 
     $user  = $request->all();
@@ -74,7 +76,7 @@ class UsersController extends Controller
   public function show($id)
   {
     $user = User::where('id' , '=', $id)
-      ->with('roles', 'companies', 'company_designation', 'company_state_branch', 'supervisors')->first();
+      ->with('roles', 'sites')->first();
 
     return response()->json([
       'data'  =>  $user,
@@ -89,15 +91,9 @@ class UsersController extends Controller
    */
   public function update(Request $request, User $user)
   {
-    $request->validate([
-      'name'                    => ['required', 'string', 'max:255'],
-      'email'                   => ['required', 'string', 'email', 'max:255'],
-      'phone'                   =>  'required'
-    ]);
-
     $user->update($request->all());
     $user->roles = $user->roles;
-    $user->companies = $user->companies;
+    $user->sites = $user->sites;
     
     return response()->json([
       'data'  =>  $user,

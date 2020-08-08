@@ -18,7 +18,7 @@ class RolesController extends Controller
       $roles = Role::with('permissions')->get();
     else
       $roles = Role::where('name', '!=', 'Super Admin')
-                        ->with('permissions')->get();
+        ->with('permissions')->get();
 
     return response()->json([
       'data'  =>  $roles

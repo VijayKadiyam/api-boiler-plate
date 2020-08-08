@@ -17,7 +17,7 @@ class RoleTest extends TestCase
     parent::setUp();
 
     $this->payload = [ 
-      'name'     =>  'test role',
+      'name'  =>  'test role',
     ];
   }
 

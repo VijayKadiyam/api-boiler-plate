@@ -16,17 +16,20 @@ class UserTest extends TestCase
   {
     parent::setUp();
 
-    $this->company = factory(\App\Company::class)->create([
+    $this->site = factory(\App\Site::class)->create([
       'name' => 'test'
     ]);
-    $this->user->assignCompany($this->company->id);
-    $this->headers['company-id'] = $this->company->id;
+    $this->user->assignSite($this->site->id);
+    $this->headers['site-id'] = $this->site->id;
 
     $this->payload = [ 
-      'name'                 =>'sangeetha',
-      'phone'                => 9844778380,
-      'email'                =>'sangeetha@gmail.com',
-      'can_send_email'        =>  0
+      'first_name'  =>  'sangeetha',
+      'last_name'   =>  'sangeetha',
+      'user_name'   =>  'sangeeta',
+      'initials'    =>  'san',
+      'phone'       =>  9844778380,
+      'email'       =>  'sangeetha@gmail.com',
+      'active'      =>  1,
     ];
   }
 
@@ -44,9 +47,12 @@ class UserTest extends TestCase
          ->assertStatus(422)
          ->assertExactJson([
             "errors"  =>  [
-              "name"                    =>  ["The name field is required."],
-              "email"                   =>  ["The email field is required."],
-              "phone"                   =>  ["The phone field is required."],
+              "first_name"  =>  ["The first name field is required."],
+              "last_name"   =>  ["The last name field is required."],
+              "user_name"   =>  ["The user name field is required."],
+              "initials"    =>  ["The initials field is required."],
+              "email"       =>  ["The email field is required."],
+              "active"      =>  ["The active field is required."],
             ],
             "message" =>  "The given data was invalid."
         ]);
@@ -60,23 +66,29 @@ class UserTest extends TestCase
      ->assertStatus(201)
      ->assertJson([
         'data'  =>  [
-          'name'                 =>'sangeetha',
-          'phone'                => 9844778380,
-          'email'                =>'sangeetha@gmail.com'
+          'first_name'  =>  'sangeetha',
+          'last_name'   =>  'sangeetha',
+          'user_name'   =>  'sangeeta',
+          'initials'    =>  'san',
+          'phone'       =>  9844778380,
+          'email'       =>  'sangeetha@gmail.com',
+          'active'      =>  1,
         ]
       ])
       ->assertJsonStructure([
           'data'  =>  [
-            'name',
-            'phone',
-            'email',
+            'first_name',
           ]
         ])
       ->assertJsonStructureExact([
           'data'  =>  [
-            'name',
+            'first_name',
+            'last_name',
+            'user_name',
+            'initials',
             'phone',
             'email',
+            'active',
             'updated_at',
             'created_at',
             'id',
@@ -90,13 +102,14 @@ class UserTest extends TestCase
     $this->disableEH();
     $user = factory(\App\User::class)->create();
     $user->assignRole(3);
-    $user->assignCompany($this->company->id);
+    $user->assignSite($this->site->id);
 
     $this->json('get', '/api/users?role_id=3', [], $this->headers)
       ->assertStatus(200)
       ->assertJsonStructure([
           'data' => []
         ]);
+
     $this->assertCount(1, User::whereHas('roles',  function($q) {
                                 $q->where('name', '!=', 'Admin');
                                 $q->where('name', '!=', 'Super Admin');
@@ -111,7 +124,7 @@ class UserTest extends TestCase
       ->assertStatus(200)
       ->assertJsonStructure([
           'data'  =>  [
-            'name',
+            'first_name',
             'phone',
             'email' 
           ]
@@ -123,68 +136,44 @@ class UserTest extends TestCase
   {
     $this->disableEH();
     $payload  = [ 
-      'name'  =>  'sangeetha',
-      'phone' =>  9088597123,
-      'email' =>  'preethi@gmail.com',
-      'can_send_email'  =>  0
+      'first_name'  =>  'sangeetha 1',
+      'last_name'   =>  'sangeetha',
+      'user_name'   =>  'sangeeta',
+      'initials'    =>  'san',
+      'phone'       =>  9844778380,
+      'email'       =>  'sangeetha@gmail.com',
+      'active'      =>  1,
     ];
     $this->json('patch', '/api/users/1', $payload, $this->headers)
       ->assertStatus(200)
       ->assertJson([
           'data'    =>  [
-            'phone' =>  9088597123,
-            'email' =>  'preethi@gmail.com'
+            'first_name'  =>  'sangeetha 1',
+            'last_name'   =>  'sangeetha',
+            'user_name'   =>  'sangeeta',
+            'initials'    =>  'san',
+            'phone'       =>  9844778380,
+            'email'       =>  'sangeetha@gmail.com',
+            'active'      =>  1,
           ]
         ])
       ->assertJsonStructureExact([
           'data'  => [
             'id',
-            'name',
+            'first_name',
+            'middle_name',
+            'last_name',
+            'user_name',
+            'initials',
             'email',
-            'email_verified_at',
-            'active',
             'phone',
             'api_token',
+            'active',
+            'email_verified_at',
             'created_at',
             'updated_at',
             'roles',
-            'companies',
-          ],
-          'success'
-        ]);
-  }
-
-  /** @test */
-  function update_user_can_send_email()
-  {
-    $this->disableEH();
-    $payload  = [ 
-      'name'  =>  'sangeetha',
-      'phone' =>  9088597123,
-      'email' =>  'preethi@gmail.com',
-      'can_send_email'  =>  1
-    ];
-    $this->json('patch', '/api/users/1', $payload, $this->headers)
-      ->assertStatus(200)
-      ->assertJson([
-          'data'    =>  [
-            'phone' =>  9088597123,
-            'email' =>  'preethi@gmail.com'
-          ]
-        ])
-      ->assertJsonStructureExact([
-          'data'  => [
-            'id',
-            'name',
-            'email',
-            'email_verified_at',
-            'active',
-            'phone',
-            'api_token',
-            'created_at',
-            'updated_at',
-            'roles',
-            'companies',
+            'sites',
           ],
           'success'
         ]);

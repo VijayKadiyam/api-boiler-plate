@@ -30,7 +30,7 @@ class RoleUserTest extends TestCase
   {
     $userTwo  = factory(\App\User::class)->create();
     $userTwo->assignRole(2);
-    $check    = $userTwo->hasRole(2);
+    $check = $userTwo->hasRole(2);
     $this->assertTrue($check);
   }
 
@@ -47,7 +47,7 @@ class RoleUserTest extends TestCase
       ->assertStatus(201)
       ->assertJson([
           'data'  =>  [
-            'name'                    =>  $userTwo->name,
+            'first_name'              =>  $userTwo->first_name,
             'phone'                   =>  $userTwo->phone,
             'email'                   =>  $userTwo->email,
             'roles'                   =>  [
@@ -60,12 +60,16 @@ class RoleUserTest extends TestCase
       ->assertJsonStructureExact([
         'data'  =>  [
           'id',
-          'name',
+          'first_name',
+          'middle_name',
+          'last_name',
+          'user_name',
+          'initials',
           'email',
-          'email_verified_at',
-          'active',
           'phone',
           'api_token',
+          'active',
+          'email_verified_at',
           'created_at',
           'updated_at',
           'roles',

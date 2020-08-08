@@ -18,7 +18,7 @@ class RegisterTest extends TestCase
       ->assertStatus(422)
       ->assertExactJson([
           "errors"  =>  [
-            "name"                    =>  ["The name field is required."],
+            "first_name"              =>  ["The first name field is required."],
             "email"                   =>  ["The email field is required."],
             "phone"                   =>  ["The phone field is required."],
             "password"                =>  ["The password field is required."],
@@ -33,7 +33,7 @@ class RegisterTest extends TestCase
     $this->disableEH();
 
     $userDetails = [
-      'name'                 =>'sangeetha',
+      'first_name'            =>'sangeetha',
       'phone'                => 9844778380,
       'email'                =>'sangeetha@gmail.com',
       'password'             =>'behappy',
@@ -44,14 +44,14 @@ class RegisterTest extends TestCase
       ->assertStatus(201)
       ->assertJson([
         'data'  =>  [
-          'name'                 =>'sangeetha',
+          'first_name'           =>'sangeetha',
           'phone'                => 9844778380,
           'email'                =>'sangeetha@gmail.com',
         ]
       ])
       ->assertJsonStructure([
           'data'  =>  [
-            'name',
+            'first_name',
             'phone',
             'email',
             'api_token'
@@ -59,7 +59,7 @@ class RegisterTest extends TestCase
         ])
       ->assertJsonStructureExact([
           'data'  =>  [
-            'name',
+            'first_name',
             'email',
             'phone',
             'active',

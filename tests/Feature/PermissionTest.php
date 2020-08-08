@@ -42,7 +42,7 @@ class PermissionTest extends TestCase
   }
 
   /** @test */
-  function add_new_role()
+  function add_new_permission()
   {
     $this->json('post', '/api/permissions', $this->payload, $this->headers)
       ->assertStatus(201)

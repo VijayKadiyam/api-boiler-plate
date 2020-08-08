@@ -21,8 +21,7 @@ class RoleUserController extends Controller
     ]);
 
     $user =  User::find($request->user_id);
-    $role =  Role::find($request->role_id);
-    $user->assignRole($role->id);
+    $user->assignRole($request->role_id);
     $roleUser = User::with('roles')->find($request->user_id);
 
     return response()->json([
